@@ -1,95 +1,78 @@
 /*
 ** EPITECH PROJECT, 2024
-** Project Name
+** Minishell 1
 ** File description:
-** Project Description
+** Main File
 */
 
 #include "my.h"
 #include "my_printf.h"
+#include "minishell1.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/wait.h>
+#include <string.h>
 
-static char **get_args(void)
+static int execute(char *cmdpath, char **args, char **env)
 {
-    char **args = NULL;
-    char *result = NULL;
-    char *line = NULL;
-    size_t len = 0;
+    pid_t pid = fork();
+    int status = 0;
 
-    if (isatty(STDIN_FILENO))
-        my_printf("$> ");
-    getline(&line, &len, stdin);
-    result = my_slice(line, 0, my_strlen(line) - 1);
-    free(line);
-    args = my_str_split(result, ' ');
-    return args;
-}
-
-static char **get_paths(char **env)
-{
-    char *path = NULL;
-    char **paths = NULL;
-
-    for (int i = 0; env[i]; i++) {
-        if (my_strncmp(env[i], "PATH=", 5) == 0) {
-            path = my_strdup(env[i]);
-            break;
-        }
+    if (pid == 0) {
+        execve(cmdpath, args, env);
+        exit(0);
+    } else {
+        waitpid(pid, &status, 0);
     }
-    if (path == NULL)
-        return NULL;
-    path = my_slice(path, 5, my_strlen(path));
-    paths = my_str_split(path, ':');
-    return paths;
+    if (status == 512) {
+        return 2;
+    }
+    if (WIFSIGNALED(status)) {
+        my_printf("%s\n", strsignal(WTERMSIG(status)));
+    }
+    return status;
 }
 
-static char *get_cmdpath(char *cmd, char **paths)
+static int loop(char **args, char **paths, char **env, int *end)
 {
     char *cmdpath = NULL;
-
-    for (int i = 0; paths[i]; i++) {
-        cmdpath = my_strconcat(my_strconcat(paths[i], "/"), cmd);
-        if (access(cmdpath, F_OK) == 0)
-            return cmdpath;
-    }
-    return NULL;
-}
-
-static int loop(char **paths)
-{
-    char **args = get_args();
-    char *cmdpath = NULL;
+    int status = 0;
 
     if (args == NULL || paths == NULL)
         return 84;
+    if (my_strcmp(args[0], "exit") == 0) {
+        *end = 1;
+        return 0;
+    }
     cmdpath = get_cmdpath(args[0], paths);
     if (cmdpath == NULL) {
         my_printf("%s: Command not found.\n", args[0]);
     } else {
-        for (int i = 0; args[i]; i++)
-            my_printf("%s\n", args[i]);
+        status = execute(cmdpath, args, env);
     }
-    free(args);
-    if (!isatty(STDIN_FILENO))
-        return 1;
-    return 0;
+    free(cmdpath);
+    return status;
 }
 
 int main(int ac __attribute__((unused)), char **av __attribute__((unused)),
     char **env)
 {
-    char **paths = get_paths(env);
+    char **paths = NULL;
+    char **args = NULL;
     int status = 0;
+    int end = 0;
 
-    while (status == 0) {
-        status = loop(paths);
+    while (!end) {
+        args = get_args();
+        paths = get_paths(env, args[0]);
+        status = loop(args, paths, env, &end);
         if (status == 84)
             return 84;
+        if (!isatty(STDIN_FILENO))
+            end = 1;
     }
-    for (int i = 0; paths[i]; i++)
-        my_printf("%s\n", paths[i]);
     free(paths);
-    return 0;
+    free(args);
+    return status;
 }

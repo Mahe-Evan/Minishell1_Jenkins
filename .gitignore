@@ -10,3 +10,8 @@ a.out
 *.gcno
 unit_tests
 mysh
+my_segfault
+commands/cd
+commands/env
+commands/setenv
+commands/unsetenv

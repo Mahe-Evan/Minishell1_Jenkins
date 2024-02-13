@@ -6,6 +6,8 @@
 ##
 
 SRC	=	main.c	\
+		parsing.c	\
+		debugging.c	\
 
 NAME	=	mysh
 
@@ -16,6 +18,7 @@ CFLAGS += -I./include/ -Werror -Wall -Wextra -Wshadow
 all:	$(NAME)
 
 $(NAME):	$(OBJ)
+	make -C commands/
 	make -C lib/my/
 	make -C lib/my_printf/
 	make -C lib/list/
