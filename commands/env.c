@@ -11,7 +11,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+extern char **environ;
+
 int main(void)
 {
+    for (int i = 0; environ[i]; i++)
+        my_printf("%s\n", environ[i]);
     return 0;
 }

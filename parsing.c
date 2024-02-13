@@ -41,7 +41,7 @@ char **get_paths(char **env, char *cmd)
     }
     if (path == NULL)
         return NULL;
-    path = my_strconcat(my_slice(path, 5, my_strlen(path)), ":./commands");
+    path = my_strconcat("./commands:", my_slice(path, 5, my_strlen(path)));
     if (my_strncmp(cmd, "./", 2) == 0)
         path = my_strconcat(path, ":./");
     paths = my_str_split(path, ':');

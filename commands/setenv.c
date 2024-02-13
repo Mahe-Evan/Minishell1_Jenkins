@@ -13,5 +13,6 @@
 
 int main(void)
 {
+    my_printf("setenv\n");
     return 0;
 }

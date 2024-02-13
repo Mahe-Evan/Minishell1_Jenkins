@@ -8,6 +8,7 @@
 SRC	=	main.c	\
 		parsing.c	\
 		debugging.c	\
+		cd.c	\
 
 NAME	=	mysh
 

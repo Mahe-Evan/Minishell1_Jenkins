@@ -5,12 +5,12 @@
 ## Makefile
 ##
 
-SRC1	=	cd.c
+SRC1	=	help.c
 SRC2	=	setenv.c
 SRC3	=	unsetenv.c
 SRC4	=	env.c
 
-NAME1	=	cd
+NAME1	=	help
 NAME2	=	setenv
 NAME3	=	unsetenv
 NAME4	=	env
@@ -22,7 +22,8 @@ OBJ4	=	$(SRC4:.c=.o)
 
 CFLAGS += -I../include/ -Werror -Wall -Wextra -Wshadow
 
-all:	$(NAME1) $(NAME2) $(NAME3) $(NAME4)
+# all:	$(NAME1) $(NAME2) $(NAME3) $(NAME4)
+all:	$(NAME2) $(NAME3) $(NAME4)
 
 $(NAME1):	$(OBJ1)
 	make -C ../lib/my/

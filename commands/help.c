@@ -13,5 +13,6 @@
 
 int main(void)
 {
+    my_printf("non\n");
     return 0;
 }

@@ -15,3 +15,4 @@ commands/cd
 commands/env
 commands/setenv
 commands/unsetenv
+commands/help

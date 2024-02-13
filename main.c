@@ -45,6 +45,9 @@ static int loop(char **args, char **paths, char **env, int *end)
         *end = 1;
         return 0;
     }
+    if (my_strcmp(args[0], "cd") == 0) {
+        return change_dir(args);
+    }
     cmdpath = get_cmdpath(args[0], paths);
     if (cmdpath == NULL) {
         my_printf("%s: Command not found.\n", args[0]);
