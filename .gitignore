@@ -1,0 +1,12 @@
+.vscode/settings.json
+\#*#
+*~
+*.log
+*.a
+*.o
+*.so
+a.out
+*.gcda
+*.gcno
+unit_tests
+mysh
