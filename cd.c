@@ -55,6 +55,7 @@ static int check_exists(char *path)
         my_printf("%s: No such file or directory\n", path);
         return 1;
     }
+    return 0;
 }
 
 int change_dir(char **args)
