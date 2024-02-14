@@ -53,13 +53,16 @@ static int execute_shell_cmd(char *cmd, int *end, char **args, char ***env)
         return 0;
     }
     if (my_strcmp(cmd, "cd") == 0) {
-        return change_dir(args);
+        return change_dir(args, *env);
     }
     if (my_strcmp(cmd, "setenv") == 0) {
         return my_setenv(args, env);
     }
     if (my_strcmp(cmd, "env") == 0) {
         return display_env(*env);
+    }
+    if (my_strcmp(cmd, "unsetenv") == 0) {
+        return my_unsetenv(args, env);
     }
     return -1;
 }

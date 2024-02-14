@@ -9,17 +9,15 @@
 #include "my_printf.h"
 #include <stdio.h>
 
-extern char **environ;
-
-char *my_getenv(char *name)
+char *my_getenv(char *name, char **env)
 {
     char *result = NULL;
     char *search = my_strconcat(name, "=");
 
-    for (int i = 0; environ[i]; i++) {
-        if (my_strncmp(environ[i], search, my_strlen(search)) == 0) {
-            result = my_strdup(my_slice(environ[i],
-                my_strlen(search), my_strlen(environ[i])));
+    for (int i = 0; env[i]; i++) {
+        if (my_strncmp(env[i], search, my_strlen(search)) == 0) {
+            result = my_strdup(my_slice(env[i],
+                my_strlen(search), my_strlen(env[i])));
             break;
         }
     }

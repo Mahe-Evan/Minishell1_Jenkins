@@ -13,18 +13,6 @@
 #include <unistd.h>
 #include <dirent.h>
 
-// static char *get_current_dir(void)
-// {
-//     char *path = NULL;
-
-//     path = getcwd(NULL, 0);
-//     if (path == NULL) {
-//         my_printf("Error: getcwd failed\n");
-//         return NULL;
-//     }
-//     return path;
-// }
-
 static void change_previous_dir(char **args, char **path, char **previous)
 {
     char *tmp = NULL;
@@ -58,7 +46,7 @@ static int check_exists(char *path)
     return 0;
 }
 
-int change_dir(char **args)
+int change_dir(char **args, char **env)
 {
     DIR* directory = NULL;
     char *path = NULL;
@@ -68,7 +56,7 @@ int change_dir(char **args)
         previous = getcwd(NULL, 0);
     }
     if (my_arrlen((void *)args) < 2) {
-        chdir(my_getenv("HOME"));
+        chdir(my_getenv("HOME", env));
         return 0;
     }
     change_previous_dir(args, &path, &previous);

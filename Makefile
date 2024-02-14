@@ -12,6 +12,7 @@ SRC	=	main.c	\
 		my_getenv.c	\
 		setenv.c	\
 		env.c	\
+		unsetenv.c	\
 
 NAME	=	mysh
 

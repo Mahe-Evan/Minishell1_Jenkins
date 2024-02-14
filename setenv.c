@@ -40,7 +40,7 @@ static void add_or_edit_env(char ***env __attribute__((unused)), char *key,
     char *value)
 {
     char **newenv = NULL;
-    int exists = my_getenv(key) != NULL;
+    int exists = my_getenv(key, *env) != NULL;
 
     newenv = copy_env(*env, !exists);
     if (exists) {
