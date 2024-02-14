@@ -60,7 +60,7 @@ void setup_str(char **str, va_list list, int *counter, char *modifiers)
 
 void specifier_s(va_list list, int *counter, char *modifiers)
 {
-    int width;
+    int width = 0;
     char *str;
 
     if (in_modifiers(1, '*', modifiers))

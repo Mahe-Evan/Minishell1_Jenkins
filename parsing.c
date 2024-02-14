@@ -28,24 +28,22 @@ char **get_args(void)
     return args;
 }
 
-char **get_paths(char **env, char *cmd)
+char **get_paths(char **env)
 {
-    char *path = NULL;
+    char *pathlist = NULL;
     char **paths = NULL;
 
     for (int i = 0; env[i]; i++) {
         if (my_strncmp(env[i], "PATH=", 5) == 0) {
-            path = my_strdup(env[i]);
+            pathlist = my_strdup(env[i]);
             break;
         }
     }
-    if (path == NULL)
+    if (pathlist == NULL)
         return NULL;
-    path = my_strconcat("./commands:", my_slice(path, 5, my_strlen(path)));
-    if (my_strncmp(cmd, "./", 2) == 0)
-        path = my_strconcat(path, ":./");
-    paths = my_str_split(path, ':');
-    free(path);
+    pathlist = my_strconcat("./commands:", my_slice(pathlist, 5, my_strlen(pathlist)));
+    paths = my_str_split(pathlist, ':');
+    free(pathlist);
     return paths;
 }
 
@@ -53,6 +51,8 @@ char *get_cmdpath(char *cmd, char **paths)
 {
     char *cmdpath = NULL;
 
+    if (access(cmd, X_OK) == 0 && my_strncmp(cmd, "./", 2) == 0)
+        return my_strdup(cmd);
     for (int i = 0; paths[i]; i++) {
         cmdpath = my_strconcat(my_strconcat(paths[i], "/"), cmd);
         if (access(cmdpath, F_OK) == 0)

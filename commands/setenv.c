@@ -11,8 +11,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int main(void)
+int main(int ac, char **av, char **env)
 {
     my_printf("setenv\n");
+
+    
+
     return 0;
 }

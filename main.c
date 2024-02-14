@@ -61,21 +61,20 @@ static int loop(char **args, char **paths, char **env, int *end)
 int main(int ac __attribute__((unused)), char **av __attribute__((unused)),
     char **env)
 {
-    char **paths = NULL;
+    char **paths = get_paths(env);
     char **args = NULL;
     int status = 0;
     int end = 0;
 
     while (!end) {
         args = get_args();
-        paths = get_paths(env, args[0]);
         status = loop(args, paths, env, &end);
         if (status == 84)
             return 84;
         if (!isatty(STDIN_FILENO))
             end = 1;
+        free(args);
     }
     free(paths);
-    free(args);
     return status;
 }

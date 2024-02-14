@@ -22,10 +22,11 @@ static int my_int_to_str_length(int nb)
 char *my_int_to_str(int nb)
 {
     int length = my_int_to_str_length(nb);
-    char *result = malloc(sizeof(char) * (length + 1));
+    char *result = NULL;
 
     if (nb == 0)
         return "0";
+    result = malloc(sizeof(char) * (length + 1));
     for (int i = length; i != 0; i--) {
         result[i - 1] = nb % 10 + '0';
         nb /= 10;

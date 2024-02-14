@@ -11,7 +11,7 @@
 
 // Parsing
 char **get_args(void);
-char **get_paths(char **env, char *cmd);
+char **get_paths(char **env);
 char *get_cmdpath(char *cmd, char **paths);
 
 // Debugging
@@ -20,3 +20,6 @@ void display_paths(char **paths);
 
 // Commands
 int change_dir(char **args);
+
+// my_getenv
+char *my_getenv(char *name);
