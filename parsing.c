@@ -41,7 +41,8 @@ char **get_paths(char **env)
     }
     if (pathlist == NULL)
         return NULL;
-    pathlist = my_strconcat("./commands:", my_slice(pathlist, 5, my_strlen(pathlist)));
+    pathlist = my_strconcat("./commands:",
+        my_slice(pathlist, 5, my_strlen(pathlist)));
     paths = my_str_split(pathlist, ':');
     free(pathlist);
     return paths;
@@ -51,12 +52,19 @@ char *get_cmdpath(char *cmd, char **paths)
 {
     char *cmdpath = NULL;
 
-    if (access(cmd, X_OK) == 0 && my_strncmp(cmd, "./", 2) == 0)
-        return my_strdup(cmd);
+    if (access(cmd, F_OK) == 0 && my_strncmp(cmd, "./", 2) == 0) {
+        if (access(cmd, X_OK) == 0)
+            return my_strdup(cmd);
+        else {
+            my_printf("%s: Permission denied.\n", cmd);
+            return NULL;
+        }
+    }
     for (int i = 0; paths[i]; i++) {
         cmdpath = my_strconcat(my_strconcat(paths[i], "/"), cmd);
         if (access(cmdpath, F_OK) == 0)
             return cmdpath;
     }
+    my_printf("%s: Command not found.\n", cmd);
     return NULL;
 }

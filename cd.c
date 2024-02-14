@@ -13,36 +13,70 @@
 #include <unistd.h>
 #include <dirent.h>
 
-int change_dir(char **args)
-{
-    DIR* directory = NULL;
-    char *path = NULL;
-    static char *previous = "";
-    // char *previous = my_getenv("OLDPWD");
+// static char *get_current_dir(void)
+// {
+//     char *path = NULL;
 
-    my_printf("previous: %s\n", previous);
-    if (my_arrlen((void *)args) < 2) {
-        chdir(my_getenv("HOME"));
-        return 0;
-    }
+//     path = getcwd(NULL, 0);
+//     if (path == NULL) {
+//         my_printf("Error: getcwd failed\n");
+//         return NULL;
+//     }
+//     return path;
+// }
+
+static void change_previous_dir(char **args, char **path, char **previous)
+{
+    char *tmp = NULL;
+
     if (my_strcmp(args[1], "-") == 0) {
-        path = previous;
-        previous = my_getenv("PWD");
+        tmp = *path;
+        *path = *previous;
+        *previous = tmp;
     } else {
-        path = args[1];
+        *path = args[1];
     }
-    if (access(path, F_OK) != 0) {
-        my_printf("%s: No such file or directory\n", path);
-        return 1;
-    }
-    directory = opendir(path);
+}
+
+static int check_directory(DIR *directory, char *path)
+{
     if (directory != NULL) {
         closedir(directory);
     } else {
         my_printf("%s: Not a directory.\n", path);
         return 1;
     }
-    previous = my_getenv("PWD");
+    return 0;
+}
+
+static int check_exists(char *path)
+{
+    if (access(path, F_OK) != 0) {
+        my_printf("%s: No such file or directory\n", path);
+        return 1;
+    }
+}
+
+int change_dir(char **args)
+{
+    DIR* directory = NULL;
+    char *path = NULL;
+    static char *previous = NULL;
+
+    if (previous == NULL) {
+        previous = getcwd(NULL, 0);
+    }
+    if (my_arrlen((void *)args) < 2) {
+        chdir(my_getenv("HOME"));
+        return 0;
+    }
+    change_previous_dir(args, &path, &previous);
+    if (check_exists(path) == 1)
+        return 1;
+    directory = opendir(path);
+    if (check_directory(directory, path) == 1)
+        return 1;
+    previous = getcwd(NULL, 0);
     chdir(path);
     return 0;
 }

@@ -20,6 +20,8 @@ void display_paths(char **paths);
 
 // Commands
 int change_dir(char **args);
+int my_setenv(char **args, char ***env);
+int display_env(char **env);
 
-// my_getenv
+// Variable Environment Management
 char *my_getenv(char *name);

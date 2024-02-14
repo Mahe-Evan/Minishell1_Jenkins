@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** Minishell 1
 ** File description:
-** 'cd' Command
+** 'env' Command
 */
 
 #include "my.h"
@@ -11,13 +11,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int main(int ac, char **av, char **env)
+int display_env(char **env)
 {
-    my_printf("setenv\n");
-
-    (void)ac;
-    (void)av;
-    (void)env;
-
+    for (int i = 0; env[i]; i++)
+        my_printf("%s\n", env[i]);
     return 0;
 }

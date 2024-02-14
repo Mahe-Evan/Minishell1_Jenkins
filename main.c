@@ -14,45 +14,70 @@
 #include <sys/wait.h>
 #include <string.h>
 
+static int help_page(int ac, char **av)
+{
+    if (ac == 2 && my_strcmp(av[1], "-h") == 0) {
+        my_printf("USAGE\n");
+        my_printf("    ./mysh\n");
+        my_printf("DESCRIPTION\n");
+        my_printf("    Simple shell project.\n");
+        return 1;
+    }
+    return 0;
+}
+
 static int execute(char *cmdpath, char **args, char **env)
 {
     pid_t pid = fork();
     int status = 0;
 
     if (pid == 0) {
-        execve(cmdpath, args, env);
-        exit(0);
+        if (execve(cmdpath, args, env) == -1)
+            return 84;
     } else {
         waitpid(pid, &status, 0);
     }
-    if (status == 512) {
-        return 2;
-    }
     if (WIFSIGNALED(status)) {
         my_printf("%s\n", strsignal(WTERMSIG(status)));
+        return status;
+    } else {
+        return WEXITSTATUS(status);
     }
-    return status;
 }
 
-static int loop(char **args, char **paths, char **env, int *end)
+static int execute_shell_cmd(char *cmd, int *end, char **args, char ***env)
+{
+    if (my_strcmp(cmd, "exit") == 0) {
+        *end = 1;
+        my_printf("exit\n");
+        return 0;
+    }
+    if (my_strcmp(cmd, "cd") == 0) {
+        return change_dir(args);
+    }
+    if (my_strcmp(cmd, "setenv") == 0) {
+        return my_setenv(args, env);
+    }
+    if (my_strcmp(cmd, "env") == 0) {
+        return display_env(*env);
+    }
+    return -1;
+}
+
+static int loop(char **args, char **paths, char ***env, int *end)
 {
     char *cmdpath = NULL;
     int status = 0;
+    int shell_cmd_result = 0;
 
     if (args == NULL || paths == NULL)
         return 84;
-    if (my_strcmp(args[0], "exit") == 0) {
-        *end = 1;
-        return 0;
-    }
-    if (my_strcmp(args[0], "cd") == 0) {
-        return change_dir(args);
-    }
+    shell_cmd_result = execute_shell_cmd(args[0], end, args, env);
+    if (shell_cmd_result != -1)
+        return shell_cmd_result;
     cmdpath = get_cmdpath(args[0], paths);
-    if (cmdpath == NULL) {
-        my_printf("%s: Command not found.\n", args[0]);
-    } else {
-        status = execute(cmdpath, args, env);
+    if (cmdpath != NULL) {
+        status = execute(cmdpath, args, *env);
     }
     free(cmdpath);
     return status;
@@ -66,9 +91,11 @@ int main(int ac __attribute__((unused)), char **av __attribute__((unused)),
     int status = 0;
     int end = 0;
 
+    if (help_page(ac, av))
+        return 0;
     while (!end) {
         args = get_args();
-        status = loop(args, paths, env, &end);
+        status = loop(args, paths, &env, &end);
         if (status == 84)
             return 84;
         if (!isatty(STDIN_FILENO))

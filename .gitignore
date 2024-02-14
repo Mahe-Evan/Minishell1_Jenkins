@@ -11,6 +11,7 @@ a.out
 unit_tests
 mysh
 my_segfault
+noperm
 commands/env
 commands/setenv
 commands/unsetenv

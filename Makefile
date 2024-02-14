@@ -10,6 +10,8 @@ SRC	=	main.c	\
 		debugging.c	\
 		cd.c	\
 		my_getenv.c	\
+		setenv.c	\
+		env.c	\
 
 NAME	=	mysh
 
