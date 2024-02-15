@@ -11,6 +11,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+static void strip_cmd(char **cmd)
+{
+    while ((*cmd)[0] == ' ' || (*cmd)[0] == '\t')
+        *cmd = my_slice(*cmd, 1, my_strlen(*cmd));
+}
+
 char **get_args(void)
 {
     char **args = NULL;
@@ -23,6 +29,7 @@ char **get_args(void)
     getline(&line, &len, stdin);
     result = my_slice(line, 0, my_strlen(line) - 1);
     free(line);
+    strip_cmd(&result);
     args = my_str_split(result, ' ');
     free(result);
     return args;

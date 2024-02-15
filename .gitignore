@@ -16,3 +16,6 @@ commands/env
 commands/setenv
 commands/unsetenv
 commands/help
+tester.sh
+tests
+tester/

@@ -45,37 +45,34 @@ static int execute(char *cmdpath, char **args, char **env)
     }
 }
 
-static int execute_shell_cmd(char *cmd, int *end, char **args, char ***env)
+static int execute_shell_cmd(char *cmd, char **args, char ***env)
 {
     if (my_strcmp(cmd, "exit") == 0) {
-        *end = 1;
         my_printf("exit\n");
         return 0;
     }
-    if (my_strcmp(cmd, "cd") == 0) {
+    if (my_strcmp(cmd, "cd") == 0)
         return change_dir(args, *env);
-    }
-    if (my_strcmp(cmd, "setenv") == 0) {
+    if (my_strcmp(cmd, "setenv") == 0)
         return my_setenv(args, env);
-    }
-    if (my_strcmp(cmd, "env") == 0) {
+    if (my_strcmp(cmd, "env") == 0)
         return display_env(*env);
-    }
-    if (my_strcmp(cmd, "unsetenv") == 0) {
+    if (my_strcmp(cmd, "unsetenv") == 0)
         return my_unsetenv(args, env);
-    }
+    if (my_strlen(cmd) == 0)
+        return 0;
     return -1;
 }
 
-static int loop(char **args, char **paths, char ***env, int *end)
+static int loop(char **args, char **paths, char ***env)
 {
     char *cmdpath = NULL;
-    int status = 0;
+    int status = 1;
     int shell_cmd_result = 0;
 
     if (args == NULL || paths == NULL)
         return 84;
-    shell_cmd_result = execute_shell_cmd(args[0], end, args, env);
+    shell_cmd_result = execute_shell_cmd(args[0], args, env);
     if (shell_cmd_result != -1)
         return shell_cmd_result;
     cmdpath = get_cmdpath(args[0], paths);
@@ -98,10 +95,10 @@ int main(int ac __attribute__((unused)), char **av __attribute__((unused)),
         return 0;
     while (!end) {
         args = get_args();
-        status = loop(args, paths, &env, &end);
+        status = loop(args, paths, &env);
         if (status == 84)
             return 84;
-        if (!isatty(STDIN_FILENO))
+        if (!isatty(STDIN_FILENO) || my_strcmp(args[0], "exit") == 0)
             end = 1;
         free(args);
     }

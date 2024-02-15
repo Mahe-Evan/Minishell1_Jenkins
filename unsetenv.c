@@ -51,8 +51,7 @@ int my_unsetenv(char **args, char ***env)
         return 1;
     result = my_getenv(args[1], *env);
     if (result == NULL) {
-        my_printf("%s: Undefined variable.\n", args[1]);
-        return 1;
+        return 0;
     }
     my_printf("result: %s\n", result);
     *env = copy_env(*env, args[1]);
