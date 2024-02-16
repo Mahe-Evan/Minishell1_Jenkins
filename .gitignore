@@ -19,3 +19,4 @@ commands/help
 tester.sh
 tests
 tester/
+dirnoperm/

@@ -17,6 +17,14 @@ static void strip_cmd(char **cmd)
         *cmd = my_slice(*cmd, 1, my_strlen(*cmd));
 }
 
+static void replace_tabs(char **cmd)
+{
+    for (int i = 0; (*cmd)[i]; i++) {
+        if ((*cmd)[i] == '\t')
+            (*cmd)[i] = ' ';
+    }
+}
+
 char **get_args(void)
 {
     char **args = NULL;
@@ -30,6 +38,7 @@ char **get_args(void)
     result = my_slice(line, 0, my_strlen(line) - 1);
     free(line);
     strip_cmd(&result);
+    replace_tabs(&result);
     args = my_str_split(result, ' ');
     free(result);
     return args;

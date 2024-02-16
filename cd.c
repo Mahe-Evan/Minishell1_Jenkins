@@ -30,6 +30,9 @@ static int check_directory(DIR *directory, char *path)
 {
     if (directory != NULL) {
         closedir(directory);
+    } else if (access(path, R_OK)){
+        my_printf("%s: Permission denied.\n", path);
+        return 1;
     } else {
         my_printf("%s: Not a directory.\n", path);
         return 1;
