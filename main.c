@@ -38,7 +38,7 @@ static int execute(char *cmdpath, char **args, char **env)
         waitpid(pid, &status, 0);
     }
     if (WIFSIGNALED(status)) {
-        my_printf("%s\n", strsignal(WTERMSIG(status)));
+        my_printf("%s (core dumped)\n", strsignal(WTERMSIG(status)));
         return status;
     } else {
         return WEXITSTATUS(status);

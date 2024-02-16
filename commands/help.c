@@ -13,6 +13,6 @@
 
 int main(void)
 {
-    my_printf("non\n");
+    my_printf("No, read the man\n");
     return 0;
 }

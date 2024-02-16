@@ -54,10 +54,6 @@ static void add_or_edit_env(char ***env __attribute__((unused)), char *key,
 
 static int check_args_amount(int ac)
 {
-    if (ac < 3) {
-        my_printf("setenv: Too few arguments.\n");
-        return 84;
-    }
     if (ac > 3) {
         my_printf("setenv: Too many arguments.\n");
         return 84;
@@ -67,8 +63,17 @@ static int check_args_amount(int ac)
 
 int my_setenv(char **args, char ***env)
 {
-    if (check_args_amount(my_arrlen((void *)args)) == 84)
+    int ac = my_arrlen((void *)args);
+    if (check_args_amount(ac) == 84)
         return 1;
+    if (ac == 1) {
+        display_env(*env);
+        return 0;
+    }
+    if (ac == 2) {
+        add_or_edit_env(env, args[1], "");
+        return 0;
+    }
     add_or_edit_env(env, args[1], args[2]);
     return 0;
 }

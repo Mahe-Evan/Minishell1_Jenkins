@@ -53,7 +53,6 @@ int my_unsetenv(char **args, char ***env)
     if (result == NULL) {
         return 0;
     }
-    my_printf("result: %s\n", result);
     *env = copy_env(*env, args[1]);
     return 0;
 }

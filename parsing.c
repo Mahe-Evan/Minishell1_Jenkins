@@ -35,7 +35,9 @@ char **get_args(void)
     if (isatty(STDIN_FILENO))
         my_printf("$> ");
     getline(&line, &len, stdin);
-    result = my_slice(line, 0, my_strlen(line) - 1);
+    result = my_strdup(line);
+    if (result[my_strlen(result) - 1] == '\n')
+        result = my_slice(line, 0, my_strlen(line) - 1);
     free(line);
     strip_cmd(&result);
     replace_tabs(&result);
