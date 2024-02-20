@@ -64,6 +64,7 @@ static int check_args_amount(int ac)
 int my_setenv(char **args, char ***env)
 {
     int ac = my_arrlen((void *)args);
+
     if (check_args_amount(ac) == 84)
         return 1;
     if (ac == 1) {

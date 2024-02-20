@@ -32,8 +32,10 @@ static int execute(char *cmdpath, char **args, char **env)
     int status = 0;
 
     if (pid == 0) {
-        if (execve(cmdpath, args, env) == -1)
-            return 84;
+        if (execve(cmdpath, args, env) == -1) {
+            my_printf("%s: execution error\n", args[0]);
+            return 1;
+        }
     } else {
         waitpid(pid, &status, 0);
     }
