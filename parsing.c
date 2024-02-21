@@ -29,16 +29,13 @@ char **get_args(void)
 {
     char **args = NULL;
     char *result = NULL;
-    char *line = NULL;
     size_t len = 0;
 
     if (isatty(STDIN_FILENO))
         my_printf("$> ");
-    getline(&line, &len, stdin);
-    result = my_strdup(line);
+    getline(&result, &len, stdin);
     if (result[my_strlen(result) - 1] == '\n')
-        result = my_slice(line, 0, my_strlen(line) - 1);
-    free(line);
+        result = my_slice(result, 0, my_strlen(result) - 1);
     strip_cmd(&result);
     replace_tabs(&result);
     args = my_str_split(result, ' ');

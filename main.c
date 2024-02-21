@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <errno.h>
 
 static int help_page(int ac, char **av)
 {
@@ -33,7 +34,7 @@ static int execute(char *cmdpath, char **args, char **env)
 
     if (pid == 0) {
         if (execve(cmdpath, args, env) == -1) {
-            my_printf("%s: execution error\n", args[0]);
+            my_printf("%s: %s\n", args[0], strerror(errno));
             return 1;
         }
     } else {
