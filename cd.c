@@ -55,10 +55,9 @@ int change_dir(char **args, char **env)
     char *path = NULL;
     static char *previous = NULL;
 
-    if (previous == NULL) {
+    if (previous == NULL)
         previous = getcwd(NULL, 0);
-    }
-    if (my_arrlen((void *)args) < 2) {
+    if (my_arrlen((void *)args) < 2 || my_strcmp(args[1], "~") == 0) {
         chdir(my_getenv("HOME", env));
         return 0;
     }
