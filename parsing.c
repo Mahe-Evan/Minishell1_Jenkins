@@ -67,7 +67,8 @@ char *get_cmdpath(char *cmd, char **paths)
 {
     char *cmdpath = NULL;
 
-    if (access(cmd, F_OK) == 0 && my_strncmp(cmd, "./", 2) == 0) {
+    // if (access(cmd, F_OK) == 0 && my_strncmp(cmd, "./", 2) == 0) {
+    if (access(cmd, F_OK) == 0 && my_str_include(cmd, '/')) {
         if (access(cmd, X_OK) == 0)
             return my_strdup(cmd);
         else {
