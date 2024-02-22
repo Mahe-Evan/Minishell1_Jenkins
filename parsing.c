@@ -7,6 +7,7 @@
 
 #include "my.h"
 #include "my_printf.h"
+#include "list.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -25,22 +26,50 @@ static void replace_tabs(char **cmd)
     }
 }
 
-char **get_args(void)
+static char **format_command(char *command)
 {
     char **args = NULL;
+
+    strip_cmd(&command);
+    replace_tabs(&command);
+    if (command[my_strlen(command) - 1] == '\n')
+        command = my_slice(command, 0, my_strlen(command) - 1);
+    args = my_str_split(command, ' ');
+    return args;
+}
+
+// static void debug_commands(list_t *commands)
+// {
+//     list_t *command = commands;
+
+//     while (command != NULL) {
+//         my_printf("arrlen: %d\n", my_arrlen((void *)(command->data)));
+//         for (int i = 0; ((char **)command->data)[i]; i++)
+//             my_printf("%s\n", ((char **)command->data)[i]);
+//         command = command->next;
+//     }
+// }
+list_t *get_commands(int *end)
+{
+    list_t *commands = NULL;
     char *result = NULL;
     size_t len = 0;
+    int getline_result = 0;
 
     if (isatty(STDIN_FILENO))
         my_printf("$> ");
-    getline(&result, &len, stdin);
-    if (result[my_strlen(result) - 1] == '\n')
-        result = my_slice(result, 0, my_strlen(result) - 1);
-    strip_cmd(&result);
-    replace_tabs(&result);
-    args = my_str_split(result, ' ');
+    else {
+        *end = 1;
+    }
+    do {
+        getline_result = getline(&result, &len, stdin);
+        if (getline_result == -1)
+            break;
+        list_add(&commands, format_command(result));
+    } while (getline_result != -1 && !isatty(STDIN_FILENO));
     free(result);
-    return args;
+    list_reverse(&commands);
+    return commands;
 }
 
 char **get_paths(char **env)
@@ -67,7 +96,6 @@ char *get_cmdpath(char *cmd, char **paths)
 {
     char *cmdpath = NULL;
 
-    // if (access(cmd, F_OK) == 0 && my_strncmp(cmd, "./", 2) == 0) {
     if (access(cmd, F_OK) == 0 && my_str_include(cmd, '/')) {
         if (access(cmd, X_OK) == 0)
             return my_strdup(cmd);

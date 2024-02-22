@@ -7,10 +7,12 @@
 
 #pragma once
 
+    #include "list.h"
     #include <sys/stat.h>
 
 // Parsing
-char **get_args(void);
+// char **get_args(void);
+list_t *get_commands(int *end);
 char **get_paths(char **env);
 char *get_cmdpath(char *cmd, char **paths);
 
