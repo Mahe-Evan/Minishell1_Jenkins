@@ -1,4 +1,4 @@
-.vscode/settings.json
+.vscode/
 \#*#
 *~
 *.log
@@ -21,3 +21,7 @@ tests
 tester/
 dirnoperm/
 my_zero
+foo
+foo.c
+toto
+bar

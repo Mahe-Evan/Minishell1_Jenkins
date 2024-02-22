@@ -37,15 +37,16 @@ static int execute(char *cmdpath, char **args, char **env)
             my_printf("%s: %s\n", args[0], strerror(errno));
             return 1;
         }
-    } else {
+    } else
         waitpid(pid, &status, 0);
-    }
     if (WIFSIGNALED(status)) {
-        my_printf("%s (core dumped)\n", strsignal(WTERMSIG(status)));
+        my_printf("%s", strsignal(WTERMSIG(status)));
+        if (WCOREDUMP(status))
+            my_printf(" (core dumped)");
+        my_printf("\n");
         return status;
-    } else {
+    } else
         return WEXITSTATUS(status);
-    }
 }
 
 static int execute_shell_cmd(char *cmd, char **args, char ***env)
