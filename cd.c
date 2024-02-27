@@ -43,7 +43,7 @@ static int check_directory(DIR *directory, char *path)
 static int check_exists(char *path)
 {
     if (access(path, F_OK) != 0) {
-        my_printf("%s: No such file or directory\n", path);
+        my_printf("%s: No such file or directory.\n", path);
         return 1;
     }
     return 0;
@@ -57,7 +57,7 @@ int change_dir(char **args, char **env)
 
     if (previous == NULL)
         previous = getcwd(NULL, 0);
-    if (my_arrlen((void *)args) < 2 || my_strcmp(args[1], "~") == 0) {
+    if (my_arrlen((void *)args) < 2 || my_strncmp(args[1], "~", 1) == 0) {
         chdir(my_getenv("HOME", env));
         return 0;
     }

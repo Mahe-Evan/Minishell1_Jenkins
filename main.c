@@ -28,6 +28,15 @@ static int help_page(int ac, char **av)
     return 0;
 }
 
+static char *get_str_error(int exitcode)
+{
+    if (exitcode == 6)
+        return "Abort";
+    if (exitcode == 8)
+        return "Floating exception";
+    return strsignal(exitcode);
+}
+
 static int execute(char *cmdpath, char **args, char **env)
 {
     pid_t pid = fork();
@@ -35,13 +44,13 @@ static int execute(char *cmdpath, char **args, char **env)
 
     if (pid == 0) {
         if (execve(cmdpath, args, env) == -1) {
-            my_printf("%s: %s\n", args[0], strerror(errno));
+            my_printf("%s: %s.\n", args[0], strerror(errno));
             return 1;
         }
     } else
         waitpid(pid, &status, 0);
     if (WIFSIGNALED(status)) {
-        my_printf("%s", strsignal(WTERMSIG(status)));
+        my_printf("%s", get_str_error(WTERMSIG(status)));
         if (WCOREDUMP(status))
             my_printf(" (core dumped)");
         my_printf("\n");
@@ -92,16 +101,18 @@ static int loop(list_t *commands, char **paths, char ***env, int *end)
 {
     list_t *command = commands;
     int status = 0;
+    int last_status = 0;
 
     while (command != NULL) {
-        status = parse_command(command->data, paths, env, end);
+        last_status = parse_command(command->data, paths, env, end);
+        if (last_status != 0)
+            status = last_status;
         command = command->next;
     }
     return status;
 }
 
-int main(int ac __attribute__((unused)), char **av __attribute__((unused)),
-    char **env)
+int main(int ac, char **av, char **env)
 {
     char **paths = get_paths(env);
     list_t *commands = NULL;

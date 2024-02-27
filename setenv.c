@@ -61,12 +61,24 @@ static int check_args_amount(int ac)
     return 0;
 }
 
+static int check_variable_name(char *name)
+{
+    if (my_str_isalpha(name)) {
+        return 0;
+    } else {
+        my_printf("setenv: Variable name must contain");
+        my_printf(" alphanumeric characters.\n");
+        return 84;
+    }
+}
+
 int my_setenv(char **args, char ***env)
 {
     int ac = my_arrlen((void *)args);
 
-    if (check_args_amount(ac) == 84)
-        return 1;
+    if (check_args_amount(ac) == 84 ||
+        (ac == 2 && check_variable_name(args[1]) == 84))
+            return 1;
     if (ac == 1) {
         display_env(*env);
         return 0;

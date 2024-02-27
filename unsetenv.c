@@ -16,10 +16,6 @@ static int check_args_count(char **args)
 {
     int count = my_arrlen((void *)args);
 
-    if (count > 2) {
-        my_printf("unsetenv: Too many arguments.\n");
-        return 1;
-    }
     if (count < 2) {
         my_printf("unsetenv: Too few arguments.\n");
         return 1;
@@ -43,16 +39,22 @@ static char **copy_env(char **env, char *key_to_remove)
     return copy;
 }
 
-int my_unsetenv(char **args, char ***env)
+static int remove_var(char *var, char ***env)
 {
-    char *result = NULL;
+    char *result = my_getenv(var, *env);
 
-    if (check_args_count(args) == 1)
-        return 1;
-    result = my_getenv(args[1], *env);
     if (result == NULL) {
         return 0;
     }
-    *env = copy_env(*env, args[1]);
+    *env = copy_env(*env, var);
+    return 0;
+}
+
+int my_unsetenv(char **args, char ***env)
+{
+    if (check_args_count(args) == 1)
+        return 1;
+    for (int i = 1; args[i]; i++)
+        remove_var(args[i], env);
     return 0;
 }
