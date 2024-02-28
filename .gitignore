@@ -25,3 +25,6 @@ my_abort
 *.sh
 tests copy
 testsold
+fake
+macos
+vscode.exe

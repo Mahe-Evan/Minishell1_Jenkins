@@ -37,6 +37,15 @@ static char *get_str_error(int exitcode)
     return strsignal(exitcode);
 }
 
+static int execve_error(char *cmd)
+{
+    my_printf("%s: %s.", cmd, strerror(errno));
+    if (errno == ENOEXEC)
+        my_printf(" Wrong Architecture.");
+    my_printf("\n");
+    return 0;
+}
+
 static int execute(char *cmdpath, char **args, char **env)
 {
     pid_t pid = fork();
@@ -44,7 +53,7 @@ static int execute(char *cmdpath, char **args, char **env)
 
     if (pid == 0) {
         if (execve(cmdpath, args, env) == -1) {
-            my_printf("%s: %s.\n", args[0], strerror(errno));
+            execve_error(args[0]);
             return 1;
         }
     } else
