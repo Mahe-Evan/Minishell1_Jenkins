@@ -21,3 +21,7 @@ my_zero
 foo
 toto
 bar
+my_abort
+*.sh
+tests copy
+testsold

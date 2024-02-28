@@ -63,13 +63,20 @@ static int check_args_amount(int ac)
 
 static int check_variable_name(char *name)
 {
-    if (my_str_isalpha(name)) {
-        return 0;
-    } else {
-        my_printf("setenv: Variable name must contain");
-        my_printf(" alphanumeric characters.\n");
-        return 84;
+    for (int i = 0; name[i]; i++) {
+        if (i == 0 && name[i] >= '0' && name[i] <= '9') {
+            my_printf("setenv: Variable name must begin with a letter.\n");
+            return 84;
+        }
+        if (!(name[i] >= 97 && name[i] <= 122) &&
+            name[i] != '_' && !(name[i] >= 65 && name[i] <= 90) &&
+            !(name[i] >= 48 && name[i] <= 57)) {
+                my_printf("setenv: Variable name must contain");
+                my_printf(" alphanumeric characters.\n");
+                return 84;
+        }
     }
+    return 0;
 }
 
 int my_setenv(char **args, char ***env)
