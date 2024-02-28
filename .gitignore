@@ -12,9 +12,6 @@ unit_tests
 mysh
 my_segfault
 noperm
-commands/env
-commands/setenv
-commands/unsetenv
 commands/help
 tester.sh
 tests
@@ -22,6 +19,5 @@ tester/
 dirnoperm/
 my_zero
 foo
-foo.c
 toto
 bar
