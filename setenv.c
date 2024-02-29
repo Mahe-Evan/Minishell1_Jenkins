@@ -84,7 +84,7 @@ int my_setenv(char **args, char ***env)
     int ac = my_arrlen((void *)args);
 
     if (check_args_amount(ac) == 84 ||
-        (ac == 2 && check_variable_name(args[1]) == 84))
+        (ac >= 2 && check_variable_name(args[1]) == 84))
             return 1;
     if (ac == 1) {
         display_env(*env);
