@@ -14,7 +14,7 @@ my_segfault
 noperm
 commands/help
 tester.sh
-tests
+testsf
 tester/
 dirnoperm/
 my_zero
